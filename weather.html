@@ -37,7 +37,7 @@
       if (city === "") return;
 
       const apiKey = "e00128dc8e9bcb6966009d60621520ef";
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}&lang=zh_cn`;
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
 
       try {
         const response = await fetch(url);
