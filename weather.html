@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>天气查询</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    input {
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 8px 12px;
+      font-size: 16px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    #weatherResult {
+      margin-top: 30px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌤️ 天气查询小工具</h1>
+  <input type="text" id="cityInput" placeholder="请输入城市名">
+  <button onclick="getWeather()">查询</button>
+
+  <div id="weatherResult"></div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value.trim();
+      if (city === "") return;
+
+      const apiKey = "f4be2dd2bdb9a84e82817e4bdce928b4";
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}&lang=zh_cn`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("查询失败，请检查城市名");
+
+        const data = await response.json();
+        const temp = data.main.temp;
+        const desc = data.weather[0].description;
+        const humidity = data.main.humidity;
+
+        document.getElementById("weatherResult").innerHTML =
+          `📍 ${city}<br>🌡️ 温度：${temp}°C<br>🌥️ 天气：${desc}<br>💧 湿度：${humidity}%`;
+      } catch (err) {
+        document.getElementById("weatherResult").innerText = "❌ 查询失败：" + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
