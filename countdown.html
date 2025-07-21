@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>倒计时小工具</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      text-align: center;
+      padding: 60px 20px;
+      background-color: #f0f0f5;
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+    #timerBox {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-size: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>⏳ 倒计时小工具</h1>
+
+  <div id="timerBox">
+    <div id="now"></div>
+    <div style="margin:20px 0;">距离 🎉 <strong>2025年8月25日</strong> 还有：</div>
+    <div id="countdown" style="font-size:24px; font-weight:bold;"></div>
+  </div>
+
+  <script>
+    const targetDate = new Date("2025-08-25T00:00:00"); // 目标日期可自由修改！
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("now").innerText = "当前时间：" + now.toLocaleString();
+      document.getElementById("countdown").innerText =
+        `${days} 天 ${hours} 小时 ${minutes} 分钟 ${seconds} 秒`;
+    }
+
+    updateCountdown(); // 先执行一次
+    setInterval(updateCountdown, 1000); // 每秒更新
+  </script>
+</body>
+</html>
