@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>我的项目作品集</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+    }
+    .card h2 {
+      margin: 10px 0;
+    }
+    .card p {
+      color: #555;
+      font-size: 14px;
+      min-height: 40px;
+    }
+    .card a {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 6px 12px;
+      background-color: #2a5bd7;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .emoji {
+      font-size: 36px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💼 我的项目作品集</h1>
+  <div class="grid">
+    <div class="card">
+      <div class="emoji">✅</div>
+      <h2>Todo List</h2>
+      <p>任务添加、完成、删除、持久保存。</p>
+      <a href="index.html" target="_blank">查看项目</a>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🌤️</div>
+      <h2>天气查询</h2>
+      <p>输入城市名，获取实时天气信息。</p>
+      <a href="weather.html" target="_blank">查看项目</a>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🧭</div>
+      <h2>导航主页</h2>
+      <p>快速跳转所有项目的首页入口。</p>
+      <a href="index.html" target="_blank">查看项目</a>
+    </div>
+
+    <div class="card">
+      <div class="emoji">✨</div>
+      <h2>名言生成器</h2>
+      <p>随机显示一句励志名言。</p>
+      <a href="quotes.html" target="_blank">查看项目</a>
+    </div>
+
+    <div class="card">
+      <div class="emoji">⏳</div>
+      <h2>倒计时工具</h2>
+      <p>实时显示距离目标日的时间差。</p>
+      <a href="countdown.html" target="_blank">查看项目</a>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🧑‍💻</div>
+      <h2>个人简历</h2>
+      <p>展示教育背景、技能与项目经验。</p>
+      <a href="resume.html" target="_blank">查看项目</a>
+    </div>
+  </div>
+</body>
+</html>
