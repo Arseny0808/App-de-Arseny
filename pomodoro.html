@@ -76,112 +76,118 @@
   </div>
 
   <script>
-    let isWorking = true;
-    let timeLeft = 25 * 60;
-    let timer = null;
-    let running = false;
+    <script>
+  let isWorking = true;
+  let timeLeft = 25 * 60;
+  let timer = null;
+  let running = false;
 
-    const statusDisplay = document.getElementById("status");
-    const timeDisplay = document.getElementById("time");
-    const startBtn = document.getElementById("startBtn");
+  const statusDisplay = document.getElementById("status");
+  const timeDisplay = document.getElementById("time");
+  const startBtn = document.getElementById("startBtn");
+  const alarmSound = document.getElementById("alarmSound");
 
-    function updateDisplay() {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timeDisplay.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-    }
+  function updateDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timeDisplay.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
 
-    function tick() {
-      if (timeLeft > 0) {
-        timeLeft--;
-        updateDisplay();
-      } else {
-        clearInterval(timer);
-        running = false;
-        recordFocus();     // 记录一次专注完成
-        switchMode();
-        toggleTimer();     // 自动开始下一段
-      }
-    }
-
-    function toggleTimer() {
-      if (running) {
-        clearInterval(timer);
-        running = false;
-        startBtn.textContent = "开始";
-      } else {
-        timer = setInterval(tick, 1000);
-        running = true;
-        startBtn.textContent = "暂停";
-      }
-    }
-
-    function resetTimer() {
+  function tick() {
+    if (timeLeft > 0) {
+      timeLeft--;
+      updateDisplay();
+    } else {
       clearInterval(timer);
       running = false;
-      timeLeft = isWorking ? 25 * 60 : 5 * 60;
-      updateDisplay();
+      if (isWorking) {
+        recordFocus(); // 只记录工作段
+      }
+      alarmSound.currentTime = 0;
+      alarmSound.play();
+      switchMode();
+      toggleTimer(); // 自动启动下一段
+    }
+  }
+
+  function toggleTimer() {
+    if (running) {
+      clearInterval(timer);
+      running = false;
       startBtn.textContent = "开始";
+    } else {
+      timer = setInterval(tick, 1000);
+      running = true;
+      startBtn.textContent = "暂停";
     }
+  }
 
-    function switchMode() {
-      isWorking = !isWorking;
-      timeLeft = isWorking ? 25 * 60 : 5 * 60;
-      document.body.style.backgroundColor = isWorking ? "#fff" : "#e0f7fa";
-      statusDisplay.textContent = isWorking ? "💼 工作中" : "☕ 休息中";
-      updateDisplay();
-      alert(isWorking ? "休息结束，开始工作！" : "工作结束，休息一下！");
-    }
-
-    function recordFocus() {
-      if (!isWorking) return; // 只有工作段完成才记录
-      const today = new Date().toISOString().slice(0, 10);
-      const focusData = JSON.parse(localStorage.getItem("focusStats") || "{}");
-      focusData[today] = (focusData[today] || 0) + 1;
-      localStorage.setItem("focusStats", JSON.stringify(focusData));
-      renderChart();
-    }
-
-    function renderChart() {
-      const ctx = document.getElementById("focusChart").getContext("2d");
-      const stats = JSON.parse(localStorage.getItem("focusStats") || "{}");
-      const labels = [];
-      const data = [];
-
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const key = date.toISOString().slice(0, 10);
-        labels.push(`${date.getMonth()+1}/${date.getDate()}`);
-        data.push(stats[key] || 0);
-      }
-
-      if (window.chartInstance) {
-        window.chartInstance.data.labels = labels;
-        window.chartInstance.data.datasets[0].data = data;
-        window.chartInstance.update();
-      } else {
-        window.chartInstance = new Chart(ctx, {
-          type: "bar",
-          data: {
-            labels: labels,
-            datasets: [{
-              label: "专注次数",
-              backgroundColor: "#ff6b6b",
-              data: data
-            }]
-          },
-          options: {
-            scales: {
-              y: { beginAtZero: true }
-            }
-          }
-        });
-      }
-    }
-
+  function resetTimer() {
+    clearInterval(timer);
+    running = false;
+    timeLeft = isWorking ? 25 * 60 : 5 * 60;
     updateDisplay();
+    startBtn.textContent = "开始";
+  }
+
+  function switchMode() {
+    isWorking = !isWorking;
+    timeLeft = isWorking ? 25 * 60 : 5 * 60;
+    document.body.style.backgroundColor = isWorking ? "#fff" : "#e0f7fa";
+    statusDisplay.textContent = isWorking ? "💼 工作中" : "☕ 休息中";
+    updateDisplay();
+    alert(isWorking ? "休息结束，开始工作！" : "工作结束，休息一下！");
+  }
+
+  function recordFocus() {
+    const today = new Date().toISOString().slice(0, 10);
+    const focusData = JSON.parse(localStorage.getItem("focusStats") || "{}");
+    focusData[today] = (focusData[today] || 0) + 1;
+    localStorage.setItem("focusStats", JSON.stringify(focusData));
     renderChart();
+  }
+
+  function renderChart() {
+    const ctx = document.getElementById("focusChart").getContext("2d");
+    const stats = JSON.parse(localStorage.getItem("focusStats") || "{}");
+    const labels = [];
+    const data = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const key = date.toISOString().slice(0, 10);
+      labels.push(`${date.getMonth()+1}/${date.getDate()}`);
+      data.push(stats[key] || 0);
+    }
+
+    if (window.chartInstance) {
+      window.chartInstance.data.labels = labels;
+      window.chartInstance.data.datasets[0].data = data;
+      window.chartInstance.update();
+    } else {
+      window.chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "专注次数",
+            backgroundColor: "#ff6b6b",
+            data: data
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+  }
+
+  updateDisplay();
+  renderChart();
+</script>
   </script>
 <audio id="alarmSound" src="marygu.mp3" preload="auto"></audio>
 </body>
