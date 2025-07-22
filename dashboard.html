@@ -25,6 +25,7 @@
     iframe {
       width: 100%;
       border: none;
+      display: block;
     }
     .quote {
       font-size: 20px;
@@ -37,18 +38,6 @@
       font-size: 22px;
       font-weight: bold;
     }
-    .frame-container {
-  display: flex;
-  justify-content: center;
-}
-iframe {
-  width: 95%;
-  max-width: 900px;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-}
-
   </style>
 </head>
 <body>
@@ -61,42 +50,48 @@ iframe {
 
   <div class="section">
     <h2>🧾 今日待办事项</h2>
-    <iframe src="todo.html" height="270"></iframe>
+    <iframe src="todo.html" onload="resizeIframe(this)"></iframe>
   </div>
 
   <div class="section">
     <h2>✅ 今日习惯打卡</h2>
-    <iframe src="habit.html" height="270"></iframe>
+    <iframe src="habit.html" onload="resizeIframe(this)"></iframe>
   </div>
 
- <div class="section">
-  <h2>⏳ 重要事项倒计时</h2>
-  <div class="frame-container">
-    <iframe src="countdown.html" height="270"></iframe>
+  <div class="section">
+    <h2>⏳ 重要事项倒计时</h2>
+    <iframe src="countdown.html" onload="resizeIframe(this)"></iframe>
   </div>
-</div>
 
-
- <div class="section">
-  <h2>💬 今日语录</h2>
-  <div class="frame-container">
-    <iframe src="quotes.html" height="270"></iframe>
+  <div class="section">
+    <h2>💬 今日语录</h2>
+    <iframe src="quotes.html" onload="resizeIframe(this)"></iframe>
   </div>
-</div>
-
 
   <div class="section">
     <h2>🌤 当前天气</h2>
-    <iframe src="weather.html" height="270"></iframe>
+    <iframe src="weather.html" onload="resizeIframe(this)"></iframe>
   </div>
 
   <script>
+    // 显示今天日期
     const today = new Date();
     const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
     const str = `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日（星期${weekdays[today.getDay()]}）`;
     document.getElementById("todayDate").textContent = str;
+
+    // 自动调整 iframe 高度
+    function resizeIframe(iframe) {
+      try {
+        const doc = iframe.contentWindow.document.documentElement;
+        iframe.style.height = doc.scrollHeight + "px";
+      } catch (e) {
+        console.warn("⚠️ 无法访问 iframe 内容，可能因跨域限制：", e);
+      }
+    }
   </script>
 
 </body>
 </html>
+
 
