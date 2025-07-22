@@ -32,6 +32,12 @@
       color: #666;
     }
 
+    #summary {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #444;
+    }
+
     button {
       font-size: 18px;
       padding: 10px 18px;
@@ -57,13 +63,39 @@
     <div id="time">25:00</div>
     <button onclick="toggleTimer()" id="startBtn">开始</button>
     <button onclick="resetTimer()">重置</button>
+    <div id="summary">🍅 今日已完成：0 次专注</div>
   </div>
 
   <script>
     let isWorking = true;
-    let timeLeft = 25 * 60;
+    let duration = 25 * 60;
+    let timeLeft = duration;
     let timer = null;
     let running = false;
+
+    const summaryDiv = document.getElementById("summary");
+
+    function getTodayKey() {
+      const today = new Date();
+      return `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+    }
+
+    function getTodayCount() {
+      const key = getTodayKey();
+      return parseInt(localStorage.getItem(key) || "0");
+    }
+
+    function updateSummary() {
+      const count = getTodayCount();
+      summaryDiv.textContent = `🍅 今日已完成：${count} 次专注`;
+    }
+
+    function recordPomodoro() {
+      const key = getTodayKey();
+      const current = getTodayCount();
+      localStorage.setItem(key, current + 1);
+      updateSummary();
+    }
 
     function updateDisplay() {
       const minutes = Math.floor(timeLeft / 60);
@@ -79,8 +111,9 @@
       } else {
         clearInterval(timer);
         running = false;
-        switchMode();       // 切换模式
-        toggleTimer();      // 自动进入下一轮
+        recordPomodoro();       // ✅ 记录一次
+        switchMode();           // ✅ 切换工作/休息
+        toggleTimer();          // ✅ 自动开始下一阶段
       }
     }
 
@@ -113,8 +146,9 @@
       document.getElementById("startBtn").textContent = "开始";
     }
 
-    // 初始化显示
+    // 初始化
     updateDisplay();
+    updateSummary(); // ✅ 初始化显示统计
   </script>
 
 </body>
