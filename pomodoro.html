@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>🍅 番茄钟专注计时器</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      text-align: center;
+      background-color: #f5f5f5;
+      padding: 40px;
+      margin: 0;
+    }
+
+    .timer-box {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 30px;
+      display: inline-block;
+    }
+
+    #time {
+      font-size: 60px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 10px 18px;
+      margin: 0 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #ff6b6b;
+      color: white;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #e55a5a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🍅 番茄钟</h1>
+  <div class="timer-box">
+    <div id="time">25:00</div>
+    <button onclick="toggleTimer()" id="startBtn">开始</button>
+    <button onclick="resetTimer()">重置</button>
+  </div>
+
+  <script>
+    let duration = 25 * 60; // 25分钟
+    let timeLeft = duration;
+    let timer = null;
+    let running = false;
+
+    function updateDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById("time").textContent =
+        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    }
+
+    function toggleTimer() {
+      if (running) {
+        clearInterval(timer);
+        running = false;
+        document.getElementById("startBtn").textContent = "开始";
+      } else {
+        timer = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+          } else {
+            clearInterval(timer);
+            alert("时间到！休息一下吧！");
+          }
+        }, 1000);
+        running = true;
+        document.getElementById("startBtn").textContent = "暂停";
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timeLeft = duration;
+      updateDisplay();
+      running = false;
+      document.getElementById("startBtn").textContent = "开始";
+    }
+
+    // 初始化显示
+    updateDisplay();
+  </script>
+
+</body>
+</html>
