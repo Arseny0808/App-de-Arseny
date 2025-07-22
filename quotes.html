@@ -8,7 +8,7 @@
       margin: 0;
       padding: 20px;
       font-family: "Helvetica Neue", sans-serif;
-      background: linear-gradient(135deg, #fefcea, #f1da36);
+      background: linear-gradient(to right, #fdfbfb, #ebedee);
       color: #333;
       text-align: center;
       display: flex;
@@ -20,12 +20,12 @@
     #quote {
       font-size: 18px;
       font-style: italic;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     #author {
-      font-size: 16px;
-      color: #555;
+      font-size: 15px;
+      color: #666;
     }
   </style>
 </head>
@@ -34,17 +34,21 @@
   <div id="author"></div>
 
   <script>
-    fetch("https://type.fit/api/quotes")
-      .then(response => response.json())
-      .then(data => {
-        const randomQuote = data[Math.floor(Math.random() * data.length)];
-        document.getElementById("quote").textContent = `“${randomQuote.text}”`;
-        document.getElementById("author").textContent = randomQuote.author ? `— ${randomQuote.author}` : "— 佚名";
-      })
-      .catch(err => {
-        document.getElementById("quote").textContent = "❌ 获取语录失败，请稍后重试";
-        document.getElementById("author").textContent = "";
-      });
+    const quotes = [
+      { text: "人生没有白走的路，每一步都算数。", author: "宫崎骏" },
+      { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
+      { text: "你要走向光明，就得离开阴影。", author: "匿名" },
+      { text: "The only way out is through.", author: "Robert Frost" },
+      { text: "成功就是从失败到失败，也依然不改热情。", author: "丘吉尔" },
+      { text: "真正的成长，是做好每一件小事。", author: "匿名" },
+      { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+      { text: "想做的事就快去做，别等别人先开始。", author: "匿名" },
+      { text: "Life is short. Smile while you still have teeth.", author: "Unknown" }
+    ];
+
+    const random = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("quote").textContent = `“${random.text}”`;
+    document.getElementById("author").textContent = `— ${random.author}`;
   </script>
 </body>
 </html>
