@@ -99,6 +99,7 @@
     } else {
       clearInterval(timer);
       running = false;
+      document.getElementById("alarmSound").play();  // 👉 播放提示音
       if (isWorking) {
         recordFocus(); // 只记录工作段
       }
