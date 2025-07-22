@@ -2,77 +2,49 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>今日一句话</title>
+  <title>今日语录</title>
   <style>
     body {
+      margin: 0;
+      padding: 20px;
       font-family: "Helvetica Neue", sans-serif;
+      background: linear-gradient(135deg, #fefcea, #f1da36);
+      color: #333;
       text-align: center;
-      padding: 60px 20px;
-      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 130px;
     }
-    h1 {
-      font-size: 32px;
-      margin-bottom: 40px;
-    }
-    #quoteBox {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      font-size: 20px;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto 40px;
-    }
-    #author {
-      margin-top: 15px;
+
+    #quote {
+      font-size: 18px;
       font-style: italic;
-      color: #555;
+      margin-bottom: 10px;
     }
-    button {
+
+    #author {
       font-size: 16px;
-      padding: 10px 20px;
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      background-color: #2a5bd7;
-      color: white;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #1f47b3;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <h1>🌟 今日一句话</h1>
-
-  <div id="quoteBox">
-    点击下面按钮获取一句启发人生的句子...
-    <div id="author"></div>
-  </div>
-
-  <button onclick="showQuote()">点击生成名言</button>
+  <div id="quote">加载中...</div>
+  <div id="author"></div>
 
   <script>
-    const quotes = [
-      { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
-      { text: "生活就像骑自行车，想保持平衡就得不断前进。", author: "爱因斯坦" },
-      { text: "道阻且长，行则将至。", author: "《礼记·中庸》" },
-      { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky" },
-      { text: "真正的发现之旅不在于寻找新大陆，而在于拥有新视角。", author: "普鲁斯特" },
-      { text: "人不是因为看见希望才坚持，而是因为坚持才看见希望。", author: "村上春树" }
-    ];
-
-    function showQuote() {
-  const random = Math.floor(Math.random() * quotes.length);
-  const q = quotes[random];
-  document.getElementById("quoteBox").innerHTML = `
-    <div>${q.text}</div>
-    <div id="author">—— ${q.author}</div>
-  `;
-}
-
+    fetch("https://zenquotes.io/api/today")
+      .then(response => response.json())
+      .then(data => {
+        const q = data[0];
+        document.getElementById("quote").textContent = `“${q.q}”`;
+        document.getElementById("author").textContent = `— ${q.a}`;
+      })
+      .catch(err => {
+        document.getElementById("quote").textContent = "❌ 获取语录失败，请稍后重试";
+        document.getElementById("author").textContent = "";
+      });
   </script>
 </body>
 </html>
