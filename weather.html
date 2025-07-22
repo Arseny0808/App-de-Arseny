@@ -71,13 +71,14 @@
       }
     }
     function sendHeight() {
+    function sendHeight() {
     const height = document.body.scrollHeight;
     window.parent.postMessage({ type: "setHeight", id: "weather", height }, "*");
   }
 
   window.onload = sendHeight;
   window.onresize = sendHeight;
-  setInterval(sendHeight, 500); // 避免动态内容未及时触发
+  setInterval(sendHeight, 500);
   </script>
 </body>
 </html>
