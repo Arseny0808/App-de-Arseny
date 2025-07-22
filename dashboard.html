@@ -70,25 +70,25 @@
 
   <div class="section">
     <h2>🌤 当前天气</h2>
-    <iframe src="weather.html" id="weather" style="width:100%; border:none;"></iframe>
+    <iframe src="weather.html" onload="resizeIframe(this)"></iframe>
   </div>
 
   <script>
     // 显示今天日期
-  const today = new Date();
-  const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
-  const str = `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日（星期${weekdays[today.getDay()]}）`;
-  document.getElementById("todayDate").textContent = str;
+    const today = new Date();
+    const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+    const str = `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日（星期${weekdays[today.getDay()]}）`;
+    document.getElementById("todayDate").textContent = str;
 
-  // 动态调整 iframe 高度
-  window.addEventListener("message", (event) => {
-    if (event.data.type === "setHeight" && event.data.id) {
-      const iframe = document.getElementById(event.data.id);
-      if (iframe) {
-        iframe.style.height = event.data.height + "px";
+    // 自动调整 iframe 高度
+    function resizeIframe(iframe) {
+      try {
+        const doc = iframe.contentWindow.document.documentElement;
+        iframe.style.height = doc.scrollHeight + "px";
+      } catch (e) {
+        console.warn("⚠️ 无法访问 iframe 内容，可能因跨域限制：", e);
       }
     }
-  });
   </script>
 
 </body>
