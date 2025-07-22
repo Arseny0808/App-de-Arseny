@@ -61,39 +61,42 @@
   <script>
     const habits = ["exercise", "sleep", "coding", "skincare"];
     const table = document.getElementById("habitTable").querySelector("tbody");
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date();
+const dateStr = today.getFullYear() + '-' +
+  String(today.getMonth() + 1).padStart(2, '0') + '-' +
+  String(today.getDate()).padStart(2, '0');
 
-    let data = JSON.parse(localStorage.getItem("habitData") || "{}");
+let data = JSON.parse(localStorage.getItem("habitData") || "{}");
 
-    if (!data[today]) {
-      data[today] = {};
-      habits.forEach(h => data[today][h] = false);
-    }
+if (!data[dateStr]) {
+  data[dateStr] = {};
+  habits.forEach(h => data[dateStr][h] = false);
+}
 
-    localStorage.setItem("habitData", JSON.stringify(data));
+localStorage.setItem("habitData", JSON.stringify(data));
 
-    const sortedDates = Object.keys(data).sort((a, b) => b.localeCompare(a));
-    sortedDates.forEach(date => {
-      const tr = document.createElement("tr");
-      const dateTd = document.createElement("td");
-      dateTd.textContent = date;
-      tr.appendChild(dateTd);
+const sortedDates = Object.keys(data).sort((a, b) => b.localeCompare(a));
+sortedDates.forEach(date => {
+  const tr = document.createElement("tr");
+  const dateTd = document.createElement("td");
+  dateTd.textContent = date;
+  tr.appendChild(dateTd);
 
-      habits.forEach(habit => {
-        const td = document.createElement("td");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = data[date][habit];
-        checkbox.onchange = () => {
-          data[date][habit] = checkbox.checked;
-          localStorage.setItem("habitData", JSON.stringify(data));
-        };
-        td.appendChild(checkbox);
-        tr.appendChild(td);
-      });
+  habits.forEach(habit => {
+    const td = document.createElement("td");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = data[date][habit];
+    checkbox.onchange = () => {
+      data[date][habit] = checkbox.checked;
+      localStorage.setItem("habitData", JSON.stringify(data));
+    };
+    td.appendChild(checkbox);
+    tr.appendChild(td);
+  });
 
-      table.appendChild(tr);
-    });
+  table.appendChild(tr);
+});
   </script>
 </body>
 </html>
