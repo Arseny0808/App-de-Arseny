@@ -61,8 +61,7 @@
 
   <script>
     let isWorking = true;
-    let duration = 25 * 60;
-    let timeLeft = duration;
+    let timeLeft = 25 * 60;
     let timer = null;
     let running = false;
 
@@ -74,16 +73,16 @@
     }
 
     function tick() {
-  if (timeLeft > 0) {
-    timeLeft--;
-    updateDisplay();
-  } else {
-    clearInterval(timer);
-    running = false;
-    switchMode();       // 切换工作/休息状态
-    toggleTimer();      // 自动启动下一段
-  }
-}
+      if (timeLeft > 0) {
+        timeLeft--;
+        updateDisplay();
+      } else {
+        clearInterval(timer);
+        running = false;
+        switchMode();       // 切换模式
+        toggleTimer();      // 自动进入下一轮
+      }
+    }
 
     function toggleTimer() {
       if (running) {
@@ -98,13 +97,13 @@
     }
 
     function switchMode() {
-  isWorking = !isWorking;
-  timeLeft = isWorking ? 25 * 60 : 5 * 60;
-  document.body.style.backgroundColor = isWorking ? "#fff" : "#e0f7fa";
-  document.getElementById("status").textContent = isWorking ? "💼 工作中" : "☕ 休息中";
-  updateDisplay();
-  alert(isWorking ? "休息结束，开始工作！" : "工作结束，休息一下！");
-}
+      isWorking = !isWorking;
+      timeLeft = isWorking ? 25 * 60 : 5 * 60;
+      document.body.style.backgroundColor = isWorking ? "#fff" : "#e0f7fa";
+      document.getElementById("status").textContent = isWorking ? "💼 工作中" : "☕ 休息中";
+      updateDisplay();
+      alert(isWorking ? "休息结束，开始工作！" : "工作结束，休息一下！");
+    }
 
     function resetTimer() {
       clearInterval(timer);
@@ -120,4 +119,5 @@
 
 </body>
 </html>
+
 
