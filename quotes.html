@@ -34,12 +34,12 @@
   <div id="author"></div>
 
   <script>
-    fetch("https://zenquotes.io/api/today")
+    fetch("https://type.fit/api/quotes")
       .then(response => response.json())
       .then(data => {
-        const q = data[0];
-        document.getElementById("quote").textContent = `“${q.q}”`;
-        document.getElementById("author").textContent = `— ${q.a}`;
+        const randomQuote = data[Math.floor(Math.random() * data.length)];
+        document.getElementById("quote").textContent = `“${randomQuote.text}”`;
+        document.getElementById("author").textContent = randomQuote.author ? `— ${randomQuote.author}` : "— 佚名";
       })
       .catch(err => {
         document.getElementById("quote").textContent = "❌ 获取语录失败，请稍后重试";
@@ -48,3 +48,4 @@
   </script>
 </body>
 </html>
+
