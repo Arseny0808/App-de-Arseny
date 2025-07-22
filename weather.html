@@ -14,27 +14,41 @@
 
     h1 {
       font-size: 22px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     input {
       padding: 8px;
       font-size: 16px;
+      width: 200px;
     }
 
     button {
-      padding: 8px 12px;
+      padding: 8px 14px;
       font-size: 16px;
-      margin-left: 5px;
+      margin-left: 8px;
       cursor: pointer;
       border: 1px solid #ccc;
       background-color: white;
+      border-radius: 4px;
     }
 
-    button::after {
-      content: none !important;
+    #weatherResult {
+      display: none; /* 🚫 默认隐藏 */
+      margin-top: 25px;
+      font-size: 18px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      display: inline-block;
+      min-width: 220px;
     }
 
+    .error {
+      color: red;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -45,14 +59,24 @@
   </div>
 
   <div id="weatherResult"></div>
+  <div id="errorMsg" class="error"></div>
 
   <script>
     async function getWeather() {
       const city = document.getElementById("cityInput").value.trim();
-      if (city === "") return;
+      const resultDiv = document.getElementById("weatherResult");
+      const errorDiv = document.getElementById("errorMsg");
+
+      resultDiv.style.display = "none";
+      errorDiv.textContent = "";
+
+      if (city === "") {
+        errorDiv.textContent = "请输入城市名";
+        return;
+      }
 
       const apiKey = "7e00c82e357f93793ba1f208a806522c";
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&lang=zh_cn&appid=${apiKey}`;
 
       try {
         const response = await fetch(url);
@@ -63,10 +87,11 @@
         const desc = data.weather[0].description;
         const humidity = data.main.humidity;
 
-        document.getElementById("weatherResult").innerHTML =
+        resultDiv.innerHTML =
           `📍 ${city}<br>🌡️ 温度：${temp}°C<br>🌥️ 天气：${desc}<br>💧 湿度：${humidity}%`;
+        resultDiv.style.display = "inline-block";
       } catch (err) {
-        document.getElementById("weatherResult").innerText = "❌ 查询失败：" + err.message;
+        errorDiv.textContent = "❌ " + err.message;
       }
     }
   </script>
