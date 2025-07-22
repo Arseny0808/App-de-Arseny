@@ -45,6 +45,9 @@
   <input type="text" id="cityInput" placeholder="请输入城市名">
   <button onclick="getWeather()">查询</button>
 
+  <!-- ✅ 别忘了这个！用来显示天气结果 -->
+  <div id="weatherResult"></div>
+
   <script>
     async function getWeather() {
       const city = document.getElementById("cityInput").value.trim();
@@ -68,16 +71,10 @@
         document.getElementById("weatherResult").innerText = "❌ 查询失败：" + err.message;
       }
     }
-    function sendHeight() {
-    function sendHeight() {
-    const height = document.body.scrollHeight;
-    window.parent.postMessage({ type: "setHeight", id: "weather", height }, "*");
-  }
 
-  window.onload = sendHeight;
-  window.onresize = sendHeight;
-  setInterval(sendHeight, 500);
+    // 不自动发消息，保持 Dashboard 控制高度为主
   </script>
 </body>
 </html>
+
 
