@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <title>天气查询</title>
@@ -27,6 +27,12 @@
       font-size: 16px;
       margin-left: 5px;
       cursor: pointer;
+      border: 1px solid #ccc;
+      background-color: white;
+    }
+
+    button::after {
+      content: none !important;
     }
 
     #weatherResult {
@@ -38,15 +44,15 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       display: inline-block;
     }
-    button::after {
-    content: none !important;
-}
   </style>
 </head>
 <body>
   <h1>🌤️ 天气查询小工具</h1>
-  <input type="text" id="cityInput" placeholder="请输入城市名">
-  <button onclick="getWeather()">查询</button>
+  <div>
+    <input type="text" id="cityInput" placeholder="请输入城市名">
+    <button onclick="getWeather()">查询</button>
+  </div>
+
   <div id="weatherResult"></div>
 
   <script>
@@ -72,8 +78,6 @@
         document.getElementById("weatherResult").innerText = "❌ 查询失败：" + err.message;
       }
     }
-
-    // 不自动发消息，保持 Dashboard 控制高度为主
   </script>
 </body>
 </html>
