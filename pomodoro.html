@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>🍅 番茄钟专注计时器</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: "Helvetica Neue", sans-serif;
@@ -18,6 +19,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       padding: 30px;
       display: inline-block;
+      margin-bottom: 40px;
     }
 
     #time {
@@ -30,12 +32,6 @@
       font-size: 22px;
       margin-bottom: 20px;
       color: #666;
-    }
-
-    #summary {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #444;
     }
 
     button {
@@ -53,6 +49,15 @@
     button:hover {
       background-color: #e55a5a;
     }
+
+    .chart-container {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    canvas {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -63,45 +68,27 @@
     <div id="time">25:00</div>
     <button onclick="toggleTimer()" id="startBtn">开始</button>
     <button onclick="resetTimer()">重置</button>
-    <div id="summary">🍅 今日已完成：0 次专注</div>
+  </div>
+
+  <div class="chart-container">
+    <h2>📈 本周专注次数</h2>
+    <canvas id="focusChart" width="600" height="300"></canvas>
   </div>
 
   <script>
     let isWorking = true;
-    let duration = 25 * 60;
-    let timeLeft = duration;
+    let timeLeft = 25 * 60;
     let timer = null;
     let running = false;
 
-    const summaryDiv = document.getElementById("summary");
-
-    function getTodayKey() {
-      const today = new Date();
-      return `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
-    }
-
-    function getTodayCount() {
-      const key = getTodayKey();
-      return parseInt(localStorage.getItem(key) || "0");
-    }
-
-    function updateSummary() {
-      const count = getTodayCount();
-      summaryDiv.textContent = `🍅 今日已完成：${count} 次专注`;
-    }
-
-    function recordPomodoro() {
-      const key = getTodayKey();
-      const current = getTodayCount();
-      localStorage.setItem(key, current + 1);
-      updateSummary();
-    }
+    const statusDisplay = document.getElementById("status");
+    const timeDisplay = document.getElementById("time");
+    const startBtn = document.getElementById("startBtn");
 
     function updateDisplay() {
       const minutes = Math.floor(timeLeft / 60);
       const seconds = timeLeft % 60;
-      document.getElementById("time").textContent =
-        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      timeDisplay.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     }
 
     function tick() {
@@ -111,9 +98,9 @@
       } else {
         clearInterval(timer);
         running = false;
-        recordPomodoro();       // ✅ 记录一次
-        switchMode();           // ✅ 切换工作/休息
-        toggleTimer();          // ✅ 自动开始下一阶段
+        recordFocus();     // 记录一次专注完成
+        switchMode();
+        toggleTimer();     // 自动开始下一段
       }
     }
 
@@ -121,21 +108,12 @@
       if (running) {
         clearInterval(timer);
         running = false;
-        document.getElementById("startBtn").textContent = "开始";
+        startBtn.textContent = "开始";
       } else {
         timer = setInterval(tick, 1000);
         running = true;
-        document.getElementById("startBtn").textContent = "暂停";
+        startBtn.textContent = "暂停";
       }
-    }
-
-    function switchMode() {
-      isWorking = !isWorking;
-      timeLeft = isWorking ? 25 * 60 : 5 * 60;
-      document.body.style.backgroundColor = isWorking ? "#fff" : "#e0f7fa";
-      document.getElementById("status").textContent = isWorking ? "💼 工作中" : "☕ 休息中";
-      updateDisplay();
-      alert(isWorking ? "休息结束，开始工作！" : "工作结束，休息一下！");
     }
 
     function resetTimer() {
@@ -143,12 +121,67 @@
       running = false;
       timeLeft = isWorking ? 25 * 60 : 5 * 60;
       updateDisplay();
-      document.getElementById("startBtn").textContent = "开始";
+      startBtn.textContent = "开始";
     }
 
-    // 初始化
+    function switchMode() {
+      isWorking = !isWorking;
+      timeLeft = isWorking ? 25 * 60 : 5 * 60;
+      document.body.style.backgroundColor = isWorking ? "#fff" : "#e0f7fa";
+      statusDisplay.textContent = isWorking ? "💼 工作中" : "☕ 休息中";
+      updateDisplay();
+      alert(isWorking ? "休息结束，开始工作！" : "工作结束，休息一下！");
+    }
+
+    function recordFocus() {
+      if (!isWorking) return; // 只有工作段完成才记录
+      const today = new Date().toISOString().slice(0, 10);
+      const focusData = JSON.parse(localStorage.getItem("focusStats") || "{}");
+      focusData[today] = (focusData[today] || 0) + 1;
+      localStorage.setItem("focusStats", JSON.stringify(focusData));
+      renderChart();
+    }
+
+    function renderChart() {
+      const ctx = document.getElementById("focusChart").getContext("2d");
+      const stats = JSON.parse(localStorage.getItem("focusStats") || "{}");
+      const labels = [];
+      const data = [];
+
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const key = date.toISOString().slice(0, 10);
+        labels.push(`${date.getMonth()+1}/${date.getDate()}`);
+        data.push(stats[key] || 0);
+      }
+
+      if (window.chartInstance) {
+        window.chartInstance.data.labels = labels;
+        window.chartInstance.data.datasets[0].data = data;
+        window.chartInstance.update();
+      } else {
+        window.chartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [{
+              label: "专注次数",
+              backgroundColor: "#ff6b6b",
+              data: data
+            }]
+          },
+          options: {
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+        });
+      }
+    }
+
     updateDisplay();
-    updateSummary(); // ✅ 初始化显示统计
+    renderChart();
   </script>
 
 </body>
