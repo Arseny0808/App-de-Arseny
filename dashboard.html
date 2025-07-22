@@ -70,7 +70,7 @@
 
   <div class="section">
     <h2>🌤 当前天气</h2>
-    <iframe src="weather.html" onload="resizeIframe(this)"></iframe>
+    <iframe src="weather.html" id="weather" style="width:100%; border:none;"></iframe>
   </div>
 
   <script>
@@ -80,15 +80,15 @@
     const str = `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日（星期${weekdays[today.getDay()]}）`;
     document.getElementById("todayDate").textContent = str;
 
-    // 自动调整 iframe 高度
-    function resizeIframe(iframe) {
-      try {
-        const doc = iframe.contentWindow.document.documentElement;
-        iframe.style.height = doc.scrollHeight + "px";
-      } catch (e) {
-        console.warn("⚠️ 无法访问 iframe 内容，可能因跨域限制：", e);
+    // 只改有 id 的 iframe，比如 weather
+  window.addEventListener("message", (event) => {
+    if (event.data.type === "setHeight" && event.data.id === "weather") {
+      const iframe = document.getElementById("weather");
+      if (iframe) {
+        iframe.style.height = event.data.height + "px";
       }
     }
+  });
   </script>
 
 </body>
