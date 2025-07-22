@@ -95,19 +95,14 @@
       if (timeLeft > 0) {
         timeLeft--;
         updateDisplay();
-      } 
-      clearInterval(timer);
-      running = false;
-
-// 播放提示音
-const sound = document.getElementById("alarmSound");
-if (sound) sound.play();
-
-recordFocus();
-switchMode();
-toggleTimer();
+      } else {
+        clearInterval(timer);
+        running = false;
+        recordFocus();     // 记录一次专注完成
+        switchMode();
+        toggleTimer();     // 自动开始下一段
+      }
     }
-  }
 
     function toggleTimer() {
       if (running) {
@@ -191,5 +186,4 @@ toggleTimer();
 <audio id="alarmSound" src="marygu.mp3" preload="auto"></audio>
 </body>
 </html>
-
 
