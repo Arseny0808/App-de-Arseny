@@ -95,14 +95,19 @@
       if (timeLeft > 0) {
         timeLeft--;
         updateDisplay();
-      } else {
-        clearInterval(timer);
-        running = false;
-        recordFocus();     // 记录一次专注完成
-        switchMode();
-        toggleTimer();     // 自动开始下一段
-      }
+      } 
+      clearInterval(timer);
+      running = false;
+
+// 播放提示音
+const sound = document.getElementById("alarmSound");
+if (sound) sound.play();
+
+recordFocus();
+switchMode();
+toggleTimer();
     }
+  }
 
     function toggleTimer() {
       if (running) {
